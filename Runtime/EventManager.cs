@@ -26,7 +26,7 @@ public static class EventManager
     // Event filtering
     private static readonly HashSet<Type> _pausedEvents = new HashSet<Type>();
     private static bool _globalEventsPaused = false;
-
+    public static bool _logsEnabled = false;
     #region Core Subscription Methods
 
     /// <summary>
@@ -56,7 +56,8 @@ public static class EventManager
     /// // Subscribe to game start event
     /// EventManager.Subscribe&lt;GameStartedEvent&gt;(() => 
     /// {
-    ///     Debug.Log("Game Started!");
+    /// if(_logsEnabled)    
+    /// Debug.Log("Game Started!");
     ///     AudioManager.PlayMusic("background");
     /// }, priority: 5);
     /// </example>
@@ -165,6 +166,7 @@ public static class EventManager
         if (_eventHandlers.ContainsKey(eventType))
         {
             _eventHandlers.Remove(eventType);
+            if(_logsEnabled)
             Debug.Log($"EventManager: Unsubscribed all handlers for {eventType.Name}");
         }
     }
@@ -191,6 +193,7 @@ public static class EventManager
     {
         if (_globalEventsPaused || _pausedEvents.Contains(typeof(T)))
         {
+            if(_logsEnabled)
             Debug.Log($"EventManager: Event {typeof(T).Name} is paused, skipping execution");
             return;
         }
@@ -203,6 +206,7 @@ public static class EventManager
             var priorityGroups = _eventHandlers[eventType];
             int totalHandlers = priorityGroups.Values.Sum(list => list.Count);
             
+            if(_logsEnabled)
             Debug.Log($"EventManager: Raising {eventType.Name} to {totalHandlers} handlers");
 
             foreach (var priorityGroup in priorityGroups)
@@ -220,6 +224,7 @@ public static class EventManager
                     }
                     catch (Exception e)
                     {
+                        if(_logsEnabled)
                         Debug.LogError($"EventManager: Error in {eventType.Name} handler: {e.Message}");
                     }
                 }
@@ -307,12 +312,14 @@ public static class EventManager
     public static void PauseEvent<T>() where T : IGameEvent
     {
         _pausedEvents.Add(typeof(T));
+        if(_logsEnabled)
         Debug.Log($"EventManager: Paused {typeof(T).Name} events");
     }
 
     public static void ResumeEvent<T>() where T : IGameEvent
     {
         _pausedEvents.Remove(typeof(T));
+        if(_logsEnabled)
         Debug.Log($"EventManager: Resumed {typeof(T).Name} events");
     }
 
@@ -329,12 +336,14 @@ public static class EventManager
     public static void PauseAllEvents()
     {
         _globalEventsPaused = true;
+        if(_logsEnabled)
         Debug.Log("EventManager: All events paused globally");
     }
 
     public static void ResumeAllEvents()
     {
         _globalEventsPaused = false;
+        if(_logsEnabled)
         Debug.Log("EventManager: All events resumed globally");
     }
 
@@ -348,6 +357,7 @@ public static class EventManager
     /// <example>
     /// // Log performance stats for debugging
     /// var stats = EventManager.GetEventStats&lt;PlayerDamageEvent&gt;();
+    /// if(_logsEnabled)
     /// Debug.Log($"Damage events called {stats.CallCount} times, avg time: {stats.AverageExecutionTime}ms");
     /// </example>
     public static EventStats GetEventStats<T>() where T : IGameEvent
@@ -360,11 +370,13 @@ public static class EventManager
     /// Get event execution history for debugging
     /// </summary>
     /// <example>
-    /// // Debug recent events
+    ///if(_logsEnabled) // 
+    // Debug recent events
     /// var history = EventManager.GetEventHistory();
     /// foreach(var entry in history.TakeLast(10))
     /// {
-    ///     Debug.Log($"{entry.Timestamp}: {entry.EventType.Name}");
+    /// if(_logsEnabled)    
+    /// Debug.Log($"{entry.Timestamp}: {entry.EventType.Name}");
     /// }
     /// </example>
     public static List<EventHistoryEntry> GetEventHistory()
@@ -395,6 +407,7 @@ public static class EventManager
     /// </summary>
     /// <example>
     /// int damageHandlers = EventManager.GetHandlerCount&lt;PlayerDamageEvent&gt;();
+    /// if(_logsEnabled)
     /// Debug.Log($"Number of damage handlers: {damageHandlers}");
     /// </example>
     public static int GetHandlerCount<T>() where T : IGameEvent
@@ -423,6 +436,7 @@ public static class EventManager
         _eventHistory.Clear();
         _eventStats.Clear();
         _globalEventsPaused = false;
+        if(_logsEnabled)
         Debug.Log("EventManager: Complete system reset");
     }
 
@@ -472,6 +486,7 @@ public static class EventManager
     private static void LogSubscription(Type eventType, int priority)
     {
         int totalHandlers = GetHandlerCount(eventType);
+        if(_logsEnabled)
         Debug.Log($"EventManager: Subscribed to {eventType.Name} (Priority: {priority}). Total handlers: {totalHandlers}");
     }
 
@@ -499,6 +514,7 @@ public static class EventManager
 
         if (executionTime > 5f) // Warn about slow events
         {
+            if(_logsEnabled)
             Debug.LogWarning($"EventManager: Slow event {eventType.Name} took {executionTime:F2}ms");
         }
     }
