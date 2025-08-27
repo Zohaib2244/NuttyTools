@@ -1,7 +1,9 @@
 {
     "name": "NuttyTools.Runtime",
     "rootNamespace": "NuttyTools",
-    "references": [],
+    "references": [
+        "Unity.TextMeshPro"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
