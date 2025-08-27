@@ -1,0 +1,11 @@
+{
+  "name": "com.nutmag2469.nuttytools",
+  "displayName": "NuttyTools",
+  "version": "1.0.0",
+  "unity": "2022.3",
+  "description": "A collection of utility scripts, used to make the workflow Nutty",
+  "author": {
+    "name": "Zohaib Shahjehan",
+    "url": "https://github.com/Zohaib2244"
+  }
+}
