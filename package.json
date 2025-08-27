@@ -7,5 +7,14 @@
   "author": {
     "name": "Zohaib Shahjehan",
     "url": "https://github.com/Zohaib2244"
-  }
+  },
+  "dependencies": {},
+  "keywords": [
+    "unity",
+    "tools",
+    "utilities",
+    "editor",
+    "scripts"
+  ],
+  "category": "Unity"
 }
