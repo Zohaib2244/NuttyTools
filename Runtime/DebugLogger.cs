@@ -1,27 +1,42 @@
 using UnityEngine;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 public static class DebugLogger
 {
-    public static void Log(string message)
+    public static void Log(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "")
     {
 #if UNITY_EDITOR || ENABLE_LOGS
-        Debug.Log($"<color=white>{message} | CASUAL LOGGER</color>");
+        string className = GetClassNameFromFilePath(filePath);
+        Debug.Log($"<color=white>[{className}.{memberName}] {message} | NUTTY LOGGER</color>");
 #endif
     }
 
-    public static void LogError(string message)
+    public static void LogError(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "")
     {
 #if UNITY_EDITOR || ENABLE_LOGS
-        Debug.LogError(message + " | CASUAL LOGGER");
+        string className = GetClassNameFromFilePath(filePath);
+        Debug.LogError($"[{className}.{memberName}] {message} | NUTTY LOGGER");
 #endif
     }
 
-    public static void Log(string message, Color color)
+    public static void Log(string message, Color color, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "")
     {
-    #if UNITY_EDITOR || ENABLE_LOGS
+#if UNITY_EDITOR || ENABLE_LOGS
+        string className = GetClassNameFromFilePath(filePath);
         string colorHex = ColorUtility.ToHtmlStringRGBA(color);
-        Debug.Log($"<color=#{colorHex}>{message} | CASUAL LOGGER</color>");
-    #endif
+        Debug.Log($"<color=#{colorHex}>[{className}.{memberName}] {message} | NUTTY LOGGER</color>");
+#endif
+    }
+
+    private static string GetClassNameFromFilePath(string filePath)
+    {
+        if (string.IsNullOrEmpty(filePath))
+            return "Unknown";
+
+        // Extract class name from file path (remove .cs extension and get filename)
+        string fileName = System.IO.Path.GetFileNameWithoutExtension(filePath);
+        return fileName;
     }
 }
 public static class CustomColors
